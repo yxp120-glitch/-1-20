@@ -47,6 +47,8 @@ NEWS_SOURCES = {
     "⚡ Energy & Innovation (Shell/Phys.org)": "https://phys.org/rss-feed/energy-news/",
     "🧠 AI & Machine Learning": "https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml",
     "⚛️ Physics & Math": "https://phys.org/rss-feed/physics-news/"
+    "✨ Naure":"https://www.nature.com/news"
+    "🚀 Smithsonian": "https://www.smithsonianmag.com/category/science-nature/"
 }
 
 # 4. 사이드바 구성
