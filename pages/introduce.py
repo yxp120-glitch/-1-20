@@ -23,9 +23,9 @@ st.markdown("""
 # 3. 사이드바 - 연락처 및 기본 정보
 with st.sidebar:
     st.image("https://via.placeholder.com/150", caption="내 사진") # 실제 사진 경로로 변경하세요
-    st.title("박윤선 (yoon sun park)")
+    st.title("snu (snu)")
     st.write("📍 서울특별시, 대한민국")
-    st.write("📧 yxp120@gmail.com")
+    st.write("📧 snu@gmail.com")
     st.write("🔗 [GitHub](https://github.com)")
     st.write("🔗 [LinkedIn](https://linkedin.com)")
     
@@ -38,7 +38,7 @@ with st.sidebar:
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.title("안녕하세요, 데이터를 사랑하는 개발자 홍길동입니다! 👋")
+    st.title("안녕하세요, 데이터를 사랑하는 개발자 snu입니다! 👋")
     st.subheader("About Me")
     st.info("""
     저는 복잡한 문제를 해결하고 효율적인 시스템을 구축하는 것에 열정을 가지고 있습니다. 
