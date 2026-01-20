@@ -19,12 +19,7 @@ SOURCE_INFO = {
 
 # ---------- 사이드바 ----------
 st.sidebar.markdown("## 🔭 Science Galaxy")
-st.sidebar.markdown(
-    """
-중·고등학생을 위한 **초신박 과학 뉴스 허브** 🌌  
-전 세계 과학 기사들을 한 번에 모아서 보여줘요!
-"""
-)
+st.sidebar.markdown("중·고등학생을 위한 **초신박 과학 뉴스 허브** 🌌 전 세계 과학 기사들을 한 번에 모아서 보여줘요!")
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 🛰 뉴스 소스 선택")
@@ -35,4 +30,27 @@ selected_sources = st.sidebar.multiselect(
     default=list(SOURCE_INFO.keys())
 )
 
-st.sidebar.markdown(
+st.sidebar.markdown("---")
+st.sidebar.markdown("### 🎨 테마 옵션")
+theme = st.sidebar.radio(
+    "전체 분위기",
+    ["🌈 레인보우 하이틴", "🌌 다크 우주", "☀️ 라이트 깔끔"]
+)
+
+max_items = st.sidebar.slider("각 사이트에서 불러올 기사 수", 3, 15, 7)
+
+# ---------- CSS ----------
+custom_css = """
+<style>
+    body {
+        background: radial-gradient(circle at top, #1d4ed8 0, #0f172a 45%, #020617 100%);
+        color: #e5e7eb;
+    }
+    .main {
+        background: transparent;
+    }
+    .news-card {
+        background: linear-gradient(135deg, #020617, #020617);
+        border-radius: 18px;
+        padding: 1rem 1.2rem;
+        margin-bo
