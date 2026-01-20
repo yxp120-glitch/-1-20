@@ -1,126 +1,128 @@
 import streamlit as st
+import feedparser
+import random
+from datetime import datetime
 
+# 1. 페이지 레이아웃 및 스타일 설정
+st.set_page_config(
+    page_title="SCIENCE HUB 2026",
+    page_icon="🧪",
+    layout="wide"
+)
 
-# 1. 페이지 설정 및 디자인
-st.set_page_config(page_title="SCIENCE PULSE 2026", page_icon="🧬", layout="wide")
-
-# 화려한 사이언스 테마 CSS
+# 화려한 시각 효과를 위한 CSS
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
-
-    .main {
-        background: radial-gradient(circle, #001220 0%, #000000 100%);
-        color: #ffffff;
+    /* 전체 배경 및 폰트 */
+    .stApp {
+        background: linear-gradient(to bottom, #000428, #004e92);
+        color: white;
     }
     
-    .title-container {
+    /* 메인 타이틀 스타일 */
+    .main-title {
+        font-size: 50px !important;
+        font-weight: 800;
         text-align: center;
-        padding: 40px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 30px;
-        border: 2px solid #00f2ff;
-        box-shadow: 0 0 20px #00f2ff;
-        margin-bottom: 40px;
-    }
-
-    .title-main {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 4rem !important;
-        background: linear-gradient(90deg, #00f2ff, #00ff88);
+        background: -webkit-linear-gradient(#00f2ff, #00ff88);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-weight: 900;
-        margin-bottom: 0px;
+        margin-bottom: 10px;
     }
-
-    .news-card {
-        background: rgba(255, 255, 255, 0.08);
+    
+    /* 뉴스 카드 디자인 */
+    .news-box {
+        background-color: rgba(255, 255, 255, 0.1);
         padding: 20px;
         border-radius: 15px;
-        border-left: 5px solid #00f2ff;
+        border: 1px solid rgba(0, 242, 255, 0.3);
         margin-bottom: 20px;
-        transition: 0.3s;
+        transition: transform 0.2s;
+    }
+    
+    .news-box:hover {
+        transform: scale(1.02);
+        background-color: rgba(255, 255, 255, 0.15);
     }
 
-    .news-card:hover {
-        transform: translateY(-5px);
-        background: rgba(255, 255, 255, 0.12);
-        box-shadow: 0 5px 15px rgba(0, 242, 255, 0.3);
+    /* 이모지 강조 */
+    .emoji-icon {
+        font-size: 2rem;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 2. 뉴스 소스 설정 (실제 RSS 피드 주소)
-SOURCES = {
-    "🚀 NASA Breaking News": "https://www.nasa.gov/rss/dyn/breaking_news.rss",
-    "🧪 Science Magazine": "https://www.science.org/rss/news_current.xml",
+# 2. 뉴스 데이터 소스 (RSS 피드)
+NEWS_SOURCES = {
+    "🚀 NASA 뉴스": "https://www.nasa.gov/rss/dyn/breaking_news.rss",
+    "🧬 Science Magazine": "https://www.science.org/rss/news_current.xml",
     "💻 MIT Tech Review": "https://www.technologyreview.com/feed/",
-    "🌍 Shell Global News": "https://www.shell.com/media/news-and-media-releases.rss"
+    "🐚 Shell Global News": "https://www.shell.com/media/news-and-media-releases.rss"
 }
 
-# 3. 사이드바 - 카테고리 선택
+# 3. 사이드바 구성
 with st.sidebar:
-    st.image("https://img.icons8.com/fluency/96/science.png")
-    st.markdown("## 🔍 탐색 설정")
-    selected_source = st.selectbox("잡지사 선택", list(SOURCES.keys()))
-    num_news = st.slider("가져올 뉴스 개수", 5, 20, 10)
+    st.markdown("# 🧭 탐사 메뉴")
+    st.write("원하는 과학 잡지를 선택하세요!")
+    choice = st.radio("매체 선택", list(NEWS_SOURCES.keys()))
+    
     st.markdown("---")
-    st.info("💡 **Tip:** 최신 AI 및 물리학 뉴스는 과학 영재학교 입시와 탐구 대회 준비에 큰 도움이 됩니다!")
+    st.markdown("### 📊 오늘의 과학 지수")
+    st.metric(label="지적 호기심", value="100%", delta="5%")
+    st.metric(label="탐구 열정", value="MAX", delta="🔥")
 
-# 4. 메인 타이틀 섹션
-st.markdown("""
-    <div class="title-container">
-        <p class="title-main">SCIENCE PULSE</p>
-        <p style='font-size: 1.5rem;'>🛰️ 2026 글로벌 과학 트렌드 실시간 브리핑</p>
-    </div>
-    """, unsafe_allow_html=True)
+# 4. 메인 화면 출력
+st.markdown('<p class="main-title">🧪 SCIENCE EXPLORER 2026</p>', unsafe_allow_html=True)
+st.write("<p style='text-align:center; font-size:1.2rem;'>최첨단 과학 소식을 실시간으로 만나보세요! 🛰️</p>", unsafe_allow_html=True)
+st.markdown("---")
 
-# 5. 뉴스 데이터 파싱 및 출력
-def display_news(url, limit):
-    feed = feedparser.parse(url)
-    if not feed.entries:
-        st.error("뉴스를 불러올 수 없습니다. 링크를 확인해 주세요!")
-        return
+# 뉴스 불러오기 함수
+def fetch_news(url):
+    try:
+        feed = feedparser.parse(url)
+        if not feed.entries:
+            return None
+        return feed.entries
+    except Exception as e:
+        return None
 
-    for i, entry in enumerate(feed.entries[:limit]):
+# 뉴스 표시 로직
+entries = fetch_news(NEWS_SOURCES[choice])
+
+if entries:
+    # 상위 10개 뉴스만 표시
+    for i, entry in enumerate(entries[:10]):
         with st.container():
-            # 날짜 포맷팅
-            date = getattr(entry, 'published', '날짜 정보 없음')
-            
             st.markdown(f"""
-                <div class="news-card">
-                    <span style='color: #00f2ff; font-weight: bold;'>NEWS {i+1}</span>
-                    <h3 style='margin-top: 5px;'>{entry.title}</h3>
-                    <p style='color: #cccccc; font-size: 0.9rem;'>📅 {date}</p>
-                    <p style='margin-bottom: 15px;'>{entry.summary[:200] if hasattr(entry, 'summary') else '내용 요약이 없습니다.'}...</p>
+                <div class="news-box">
+                    <h3>📢 {entry.title}</h3>
+                    <p style='color: #00f2ff;'>📅 {getattr(entry, 'published', '2026-01-20')}</p>
+                    <p>{entry.summary[:250] if hasattr(entry, 'summary') else '상세 내용은 본문 링크를 확인해주세요.'}...</p>
                 </div>
             """, unsafe_allow_html=True)
-            st.link_button(f"🔗 기사 원문 읽기", entry.link)
-            st.markdown("<br>", unsafe_allow_html=True)
+            st.link_button(f"🔗 {choice} 원문 보기", entry.link)
+            st.write("") # 간격 조절
+else:
+    st.warning("⚠️ 뉴스를 불러오는 중입니다. 잠시 후 다시 시도하거나 다른 소스를 선택해 주세요!")
 
-# 실행
-st.subheader(f"✨ {selected_source}의 최신 헤드라인")
-display_news(SOURCES[selected_source], num_news)
-
-# 6. 교육용 인터랙티브 섹션 (하단)
+# 5. 교육용 인터랙티브 섹션 (하단 하이라이트)
 st.markdown("---")
-col1, col2 = st.columns(2)
+st.markdown("### 💡 미래 과학도를 위한 한 줄 아이디어")
 
-with col1:
-    st.markdown("### 🧠 오늘의 과학 퀴즈")
-    st.write("인공지능(AI)이 스스로 학습하여 인간의 지능을 뛰어넘는 지점을 무엇이라 할까요?")
-    if st.button("정답 확인 💡"):
-        st.success("정답은 **'특이점(Singularity)'**입니다! 미래 과학의 핵심 키워드죠.")
+ideas = [
+    "🤖 생성형 AI가 과학 논문을 검증할 수 있을까?",
+    "⚛️ 양자 컴퓨터가 실생활에 들어오는 시점은 언제일까?",
+    "🚀 화성 거주지 설계를 위한 물리 시뮬레이션 만들기",
+    "🧬 유전자 가위 기술로 질병 없는 세상을 만들 수 있을까?"
+]
 
-with col2:
-    st.markdown("### 🧪 탐구 아이디어 뱅크")
-    ideas = [
-        "기계학습을 이용한 교내 에너지 절약 알고리즘",
-        "액체 금속을 활용한 물리 시뮬레이션 연구",
-        "기후 변화에 따른 미세 조류의 산소 발생량 비교"
-    ]
-    st.write(f"추천 주제: **{random.choice(ideas)}**")
+random_idea = random.choice(ideas)
+st.success(f"**오늘의 탐구 주제:** {random_idea}")
+
+# 박수 및 축하 애니메이션 (선택사항)
+if st.button("🎉 오늘 공부 완료! 클릭해서 축하하기"):
+    st.balloons()
+    st.toast("훌륭합니다! 미래의 과학자님! 👨‍🔬👩‍🔬")
 
 # 푸터
-st.markdown("<br><p style='text-align: center; color: #444;'>© 2026 Future Science Academy | Inspired by Innovation</p>", unsafe_allow_html=True)
+st.markdown("<br><p style='text-align: center; color: #888;'>Powered by Streamlit & Python 2026</p>", unsafe_allow_html=True)
