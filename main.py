@@ -1,139 +1,127 @@
 import streamlit as st
-import time
-import random
+import feedparser
+from datetime import datetime
 
-# 1. 페이지 설정
-st.set_page_config(
-    page_title="PUMP UP! 오늘의 루틴",
-    page_icon="💪",
-    layout="centered"
-)
+# 1. 페이지 설정 및 디자인
+st.set_page_config(page_title="SCIENCE PULSE 2026", page_icon="🧬", layout="wide")
 
-# 2. 화려한 CSS 스타일링
+# 화려한 사이언스 테마 CSS
 st.markdown("""
     <style>
-    /* 메인 배경 그라데이션 */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
+
     .main {
-        background: linear-gradient(135deg, #1e1e2f 0%, #2a2a40 100%);
-        color: white;
+        background: radial-gradient(circle, #001220 0%, #000000 100%);
+        color: #ffffff;
     }
     
-    /* 타이틀 애니메이션 효과 */
-    @keyframes glow {
-        0% { text-shadow: 0 0 10px #ff4b4b; }
-        50% { text-shadow: 0 0 20px #ff4b4b, 0 0 30px #ff8e53; }
-        100% { text-shadow: 0 0 10px #ff4b4b; }
-    }
-    
-    .title-text {
-        font-size: 3.5rem !important;
-        font-weight: 900;
+    .title-container {
         text-align: center;
-        color: white;
-        animation: glow 2s infinite;
-        margin-bottom: 10px;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 30px;
+        border: 2px solid #00f2ff;
+        box-shadow: 0 0 20px #00f2ff;
+        margin-bottom: 40px;
     }
 
-    /* 카드 스타일링 */
-    .stSelectbox, .stSlider, .stButton {
-        background-color: rgba(255, 255, 255, 0.05);
+    .title-main {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 4rem !important;
+        background: linear-gradient(90deg, #00f2ff, #00ff88);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 900;
+        margin-bottom: 0px;
+    }
+
+    .news-card {
+        background: rgba(255, 255, 255, 0.08);
+        padding: 20px;
         border-radius: 15px;
-        padding: 10px;
+        border-left: 5px solid #00f2ff;
+        margin-bottom: 20px;
+        transition: 0.3s;
     }
 
-    /* 결과 박스 디자인 */
-    .routine-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        margin-top: 20px;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    }
-
-    .exercise-item {
-        font-size: 1.2rem;
-        margin-bottom: 10px;
-        padding: 10px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    .news-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 5px 15px rgba(0, 242, 255, 0.3);
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. 운동 데이터베이스
-exercise_db = {
-    "가슴 🔥": ["Push-ups", "Bench Press", "Incline Dumbbell Press", "Chest Fly"],
-    "등 🦅": ["Pull-ups", "Lat Pull Down", "Seated Row", "Deadlift"],
-    "하체 🍗": ["Squat", "Lunge", "Leg Press", "Leg Extension"],
-    "어깨 🛡️": ["Shoulder Press", "Side Lateral Raise", "Front Raise"],
-    "팔 💪": ["Bicep Curl", "Tricep Extension", "Hammer Curl"],
-    "복근 🍫": ["Plank", "Crunch", "Leg Raise", "Russian Twist"]
+# 2. 뉴스 소스 설정 (실제 RSS 피드 주소)
+SOURCES = {
+    "🚀 NASA Breaking News": "https://www.nasa.gov/rss/dyn/breaking_news.rss",
+    "🧪 Science Magazine": "https://www.science.org/rss/news_current.xml",
+    "💻 MIT Tech Review": "https://www.technologyreview.com/feed/",
+    "🌍 Shell Global News": "https://www.shell.com/media/news-and-media-releases.rss"
 }
 
-# 4. 메인 UI
-st.markdown('<p class="title-text">⚡ PUMP UP YOUR DAY ⚡</p>', unsafe_allow_html=True)
-st.write("<h4 style='text-align: center; color: #ccc;'>오늘의 한계를 뛰어넘을 준비가 되셨나요?</h4>", unsafe_allow_html=True)
-st.markdown("---")
+# 3. 사이드바 - 카테고리 선택
+with st.sidebar:
+    st.image("https://img.icons8.com/fluency/96/science.png")
+    st.markdown("## 🔍 탐색 설정")
+    selected_source = st.selectbox("잡지사 선택", list(SOURCES.keys()))
+    num_news = st.slider("가져올 뉴스 개수", 5, 20, 10)
+    st.markdown("---")
+    st.info("💡 **Tip:** 최신 AI 및 물리학 뉴스는 과학 영재학교 입시와 탐구 대회 준비에 큰 도움이 됩니다!")
 
-# 입력 세션
+# 4. 메인 타이틀 섹션
+st.markdown("""
+    <div class="title-container">
+        <p class="title-main">SCIENCE PULSE</p>
+        <p style='font-size: 1.5rem;'>🛰️ 2026 글로벌 과학 트렌드 실시간 브리핑</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# 5. 뉴스 데이터 파싱 및 출력
+def display_news(url, limit):
+    feed = feedparser.parse(url)
+    if not feed.entries:
+        st.error("뉴스를 불러올 수 없습니다. 링크를 확인해 주세요!")
+        return
+
+    for i, entry in enumerate(feed.entries[:limit]):
+        with st.container():
+            # 날짜 포맷팅
+            date = getattr(entry, 'published', '날짜 정보 없음')
+            
+            st.markdown(f"""
+                <div class="news-card">
+                    <span style='color: #00f2ff; font-weight: bold;'>NEWS {i+1}</span>
+                    <h3 style='margin-top: 5px;'>{entry.title}</h3>
+                    <p style='color: #cccccc; font-size: 0.9rem;'>📅 {date}</p>
+                    <p style='margin-bottom: 15px;'>{entry.summary[:200] if hasattr(entry, 'summary') else '내용 요약이 없습니다.'}...</p>
+                </div>
+            """, unsafe_allow_html=True)
+            st.link_button(f"🔗 기사 원문 읽기", entry.link)
+            st.markdown("<br>", unsafe_allow_html=True)
+
+# 실행
+st.subheader(f"✨ {selected_source}의 최신 헤드라인")
+display_news(SOURCES[selected_source], num_news)
+
+# 6. 교육용 인터랙티브 섹션 (하단)
+st.markdown("---")
 col1, col2 = st.columns(2)
 
 with col1:
-    target = st.selectbox("🎯 어디를 태워볼까요?", list(exercise_db.keys()))
-    intensity = st.select_slider("🔥 오늘의 강도", options=["하 (순한맛)", "중 (보통맛)", "상 (매운맛)"], value="중 (보통맛)")
+    st.markdown("### 🧠 오늘의 과학 퀴즈")
+    st.write("인공지능(AI)이 스스로 학습하여 인간의 지능을 뛰어넘는 지점을 무엇이라 할까요?")
+    if st.button("정답 확인 💡"):
+        st.success("정답은 **'특이점(Singularity)'**입니다! 미래 과학의 핵심 키워드죠.")
 
 with col2:
-    condition = st.selectbox("🔋 현재 몸 컨디션", ["🚀 에너자이저", "🆗 나쁘지 않음", "💤 약간 피곤", "🤕 근육통 주의"])
-    workout_time = st.slider("⏰ 운동 가능 시간 (분)", 10, 120, 40, step=10)
-
-# 5. 루틴 생성 로직
-if st.button("🔥 나만의 루틴 생성하기!", use_container_width=True):
-    with st.spinner('🚀 최적의 효율을 계산하는 중...'):
-        time.sleep(1.5)
-    
-    # 강도 및 컨디션에 따른 세트/수행 조절
-    sets = 3
-    if intensity == "상 (매운맛)": sets = 5
-    elif intensity == "하 (순한맛)": sets = 2
-    
-    if condition == "🚀 에너자이저": sets += 1
-    elif condition == "🤕 근육통 주의": sets -= 1
-
-    # 시간당 종목 수 (대략 1종목당 10~15분 소요 가정)
-    num_exercises = max(2, workout_time // 15)
-    selected_exercises = random.sample(exercise_db[target], min(num_exercises, len(exercise_db[target])))
-
-    # 결과 발표
-    st.balloons() # 박수 대신 축하 풍선 애니메이션!
-    
-    st.markdown(f"""
-        <div class="routine-card">
-            <h2 style='color: #ff4b4b;'>🏆 오늘의 {target} 정복 루틴</h2>
-            <p style='color: #aaa;'>선택한 강도: <b>{intensity}</b> | 목표 시간: <b>{workout_time}분</b></p>
-            <hr style='border: 0.5px solid rgba(255,255,255,0.1);'>
-    """, unsafe_allow_html=True)
-    
-    for ex in selected_exercises:
-        st.markdown(f"""
-            <div class="exercise-item">
-                ✨ <b>{ex}</b> : {sets} 세트 (세트당 12-15회)
-            </div>
-        """, unsafe_allow_html=True)
-        
-    st.markdown("</div>", unsafe_allow_html=True)
-    
-    st.success(f"💪 {condition} 상태에 맞춘 완벽한 구성입니다. 지금 바로 시작하세요!")
-
-# 6. 동기부여 섹션
-st.markdown("---")
-quotes = [
-    "남들이 그만둘 때 한 번 더 하는 사람이 승리한다. 🔥",
-    "고통은 지나가지만, 근육은 남는다. 💪",
-    "오늘의 노력이 내일의 나를 만든다. 🚀",
-    "운동할 시간이 없다는 건 핑계일 뿐입니다. ⏰"
-]
-st.info(f"💡 **오늘의 한마디:** {random.choice(quotes)}")
+    st.markdown("### 🧪 탐구 아이디어 뱅크")
+    ideas = [
+        "기계학습을 이용한 교내 에너지 절약 알고리즘",
+        "액체 금속을 활용한 물리 시뮬레이션 연구",
+        "기후 변화에 따른 미세 조류의 산소 발생량 비교"
+    ]
+    st.write(f"추천 주제: **{random.choice(ideas)}**")
 
 # 푸터
-st.markdown("<br><p style='text-align: center; color: #666;'>© 2026 WORKOUT ADVENTURE | Stay Strong!</p>", unsafe_allow_html=True)
+st.markdown("<br><p style='text-align: center; color: #444;'>© 2026 Future Science Academy | Inspired by Innovation</p>", unsafe_allow_html=True)
