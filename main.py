@@ -1,6 +1,5 @@
 import streamlit as st
-import feedparser
-from datetime import datetime
+
 
 # 1. 페이지 설정 및 디자인
 st.set_page_config(page_title="SCIENCE PULSE 2026", page_icon="🧬", layout="wide")
