@@ -1,5 +1,3 @@
-pip install streamlit
-streamlit run app.py
 import streamlit as st
 from datetime import datetime
 import random
@@ -238,4 +236,3 @@ MBTI_INFO = {
         "skills": ["감각적 표현", "툴(포토샵 등)", "브랜딩 감각", "관찰력"],
         "activities": ["포트폴리오 만들기", "촬영/편집 루틴", "전시/공연 리뷰 쓰기"]
     },
-
