@@ -23,9 +23,9 @@ st.markdown("""
 # 3. 사이드바 - 연락처 및 기본 정보
 with st.sidebar:
     st.image("https://via.placeholder.com/150", caption="내 사진") # 실제 사진 경로로 변경하세요
-    st.title("홍길동 (Gildong Hong)")
+    st.title("박윤선 (yoon sun park)")
     st.write("📍 서울특별시, 대한민국")
-    st.write("📧 email@example.com")
+    st.write("📧 yxp120@gmail.com")
     st.write("🔗 [GitHub](https://github.com)")
     st.write("🔗 [LinkedIn](https://linkedin.com)")
     
