@@ -38,11 +38,11 @@ with st.sidebar:
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.title("안녕하세요, 데이터를 사랑하는 개발자 snu입니다! 👋")
+    st.title("안녕하세요, snu입니다! 👋")
     st.subheader("About Me")
     st.info("""
     저는 복잡한 문제를 해결하고 효율적인 시스템을 구축하는 것에 열정을 가지고 있습니다. 
-    현재 파이썬과 스트림릿을 활용하여 데이터 시각화 도구를 개발하고 있으며, 
+    현재 파이썬과 스트림릿을 활용하여 데이터 시각화 도구를 공부하고 있으며, 
     항상 새로운 기술을 배우는 것을 즐깁니다.
     """)
 
@@ -76,7 +76,7 @@ with col2:
     st.write("---")
     st.subheader("🎓 Education")
     st.write("**한국대학교**")
-    st.caption("컴퓨터공학 학사 (2018 - 2022)")
+    st.caption("학사 (2018 - 2022)")
 
 # 5. 하단 컨택트 폼
 st.write("---")
