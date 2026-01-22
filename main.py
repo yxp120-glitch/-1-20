@@ -44,7 +44,7 @@ def get_news(url):
 NEWS_SOURCES = {
     "🧬 Science Magazine": "https://www.science.org/rss/news_current.xml",
     "🤖 MIT Tech Review": "https://www.technologyreview.com/topnews.rss",
-    "⚡ Energy & Innovation (Shell/Phys.org)": "https://phys.org/rss-feed/energy-news.xml",
+    "⚡ Energy & Innovation (Shell/Phys.org)": "https://phys.org/rss-feed/energy-news.rss",
     "🧠 AI & Machine Learning": "https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml",
     "⚛️ Physics & Math": "https://phys.org/rss-feed/physics-news/",
     "✨ Naure": "https://www.nature.com/news/",
